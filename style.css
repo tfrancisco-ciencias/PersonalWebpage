@@ -1,0 +1,236 @@
+/* =========================================
+   PALETAS DE COLORES (Elige solo una)
+   ========================================= */
+
+/* (i) UNAM (Formal - Azul y Oro) */
+/*
+:root {
+    --bg-color: #f4f4f4;
+    --text-color: #222222;
+    --header-bg: #002B7A; 
+    --header-text: #D4AF37; 
+    --link-color: #002B7A;
+    --border-color: #D4AF37;
+    --menu-hover: #D4AF37;
+    --menu-hover-text: #002B7A;
+}
+*/
+
+/* (ii) Moderna Minimalista (Activa por defecto) */
+/*
+:root {
+    --bg-color: #fcfcfc;
+    --text-color: #333333;
+    --header-bg: #eeeeee;
+    --header-text: #111111;
+    --link-color: #444444;
+    --border-color: #bbbbbb;
+    --menu-hover: #dddddd;
+    --menu-hover-text: #000000;
+}
+*/
+
+/* (iii) Alegre y Moderna (Vivos pero elegantes) */
+
+:root {
+    --bg-color: #fffaf0;
+    --text-color: #2c3e50;
+    --header-bg: #ff6f61;
+    --header-text: #ffffff;
+    --link-color: #008080;
+    --border-color: #ff6f61;
+    --menu-hover: #008080;
+    --menu-hover-text: #ffffff;
+}
+
+
+/* (iv) Evangelion (Morado, Verde Neón, Naranja) */
+/*
+:root {
+    --bg-color: #1a1a2e;
+    --text-color: #e0e0e0;
+    --header-bg: #5c2e91;
+    --header-text: #76FF03;
+    --link-color: #FF9800;
+    --border-color: #76FF03;
+    --menu-hover: #76FF03;
+    --menu-hover-text: #1a1a2e;
+}
+*/
+
+/* (v) Cowboy Bebop (Azul oscuro, Rojo, Amarillo desaturado) */
+/*
+:root {
+    --bg-color: #1e212b;
+    --text-color: #f2e3c6;
+    --header-bg: #d62828;
+    --header-text: #f2e3c6;
+    --link-color: #457b9d;
+    --border-color: #f2e3c6;
+    --menu-hover: #f2e3c6;
+    --menu-hover-text: #1e212b;
+}
+*/
+
+/* =========================================
+   ESTILOS GENERALES (Estilo Web 1.0)
+   ========================================= */
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 20px auto;
+    border: 2px solid var(--border-color);
+    padding: 20px;
+    background-color: inherit;
+}
+
+/* 1. Header y Banner */
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 15px;
+    border: 2px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 2px solid var(--header-text);
+    /* Si quieres que se vea 90s, puedes quitar el border-radius */
+    border-radius: 5px; 
+}
+
+/* 2. Menú Horizontal */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+}
+
+nav a:hover, nav a.active {
+    background-color: var(--menu-hover);
+    color: var(--menu-hover-text);
+    border: 1px solid var(--border-color);
+}
+
+/* Contenido */
+a { color: var(--link-color); text-decoration: underline; }
+hr { border: 0; border-bottom: 1px dashed var(--border-color); margin: 20px 0; }
+
+/* 3. Footer */
+footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-color);
+    font-size: 0.9em;
+}
+
+/* 5. Buscaminas Flotante (Estilo Windows 95) */
+#buscaminas-container {
+    position: fixed;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    background-color: #c0c0c0; /* Color gris de Windows 95 forzado */
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    padding: 5px;
+    width: 160px;
+    color: black;
+    font-family: sans-serif;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+#buscaminas-header {
+    background-color: #000080;
+    color: white;
+    padding: 2px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#buscaminas-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 18px); /* Cuadrícula de 8x8 */
+    gap: 1px;
+    background-color: #808080;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
+
+.cell {
+    width: 18px;
+    height: 18px;
+    background-color: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cell.revealed {
+    border: 1px solid #808080;
+    background-color: #c0c0c0;
+}
+
+#reset-btn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 2px;
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    cursor: pointer;
+}
+#reset-btn:active {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
