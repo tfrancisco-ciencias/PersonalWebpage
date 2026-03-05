@@ -103,20 +103,7 @@ header {
     margin-bottom: 20px;
 }
 
-.banner {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
 
-.profile-pic {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border: 2px solid var(--header-text);
-    /* Si quieres que se vea 90s, puedes quitar el border-radius */
-    border-radius: 5px; 
-}
 
 /* 2. Menú Horizontal */
 nav ul {
@@ -233,4 +220,70 @@ footer {
     border-left: 2px solid #808080;
     border-right: 2px solid #ffffff;
     border-bottom: 2px solid #ffffff;
+}
+
+
+/* =========================================
+   NUEVOS ESTILOS PARA EL FOTO-BANNER GRANDE
+   ========================================= */
+
+header {
+    /* Quitamos el padding interno para que la foto llegue a los bordes del borde */
+    padding: 0;
+    overflow: hidden; /* Asegura que la imagen no se salga si hay bordes redondeados */
+}
+
+.banner-full {
+    display: flex;
+    flex-direction: column; /* Apila la imagen y luego el texto */
+    align-items: stretch; /* Estira ambos elementos a todo el ancho */
+}
+
+.cover-pic {
+    width: 100%; /* Ocupa el 100% del ancho del header */
+    
+    /* CONTROL DE ALTURA:
+       Ajusta 'max-height' a la altura que prefieras para tu banner.
+       300px es un buen tamaño para escritorio. En móviles se adaptará. */
+    max-height: 300px;
+    height: auto;
+    
+    /* Esta propiedad es CRUCIAL:
+       Asegura que la imagen no se deforme. Se cortará (crop) por los lados o 
+       arriba/abajo si las proporciones no coinciden, pero no se estirará. */
+    object-fit: cover;
+    
+    /* Posiciona la imagen centralmente en el corte (puedes usar top, center, bottom) */
+    object-position: center; 
+    
+    /* Borde inferior opcional para separar la foto del texto */
+    border-bottom: 2px solid var(--border-color);
+}
+
+.title-text-full {
+    padding: 20px; /* Recuperamos el padding para el texto debajo de la foto */
+    text-align: center; /* Centramos el título para mayor elegancia en este diseño */
+}
+
+.title-text-full h1 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: var(--header-text); /* Asegura que use el color del tema */
+}
+
+.title-text-full p {
+    margin: 0;
+    font-size: 1.1em;
+    font-style: italic;
+    color: var(--header-text);
+}
+
+/* Ajustes para móviles (pantallas pequeñas) */
+@media (max-width: 600px) {
+    .cover-pic {
+        max-height: 200px; /* Altura más baja en móviles */
+    }
+    .container {
+        width: 95%; /* Menos margen en móviles */
+    }
 }
