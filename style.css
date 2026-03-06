@@ -287,3 +287,43 @@ header {
         width: 95%; /* Menos margen en móviles */
     }
 }
+
+/* =========================================
+   ESTILOS PARA TABLAS (Ej. Página de Enseñanza)
+   ========================================= */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Permite hacer scroll horizontal en celulares */
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Une los bordes al estilo clásico */
+    margin-top: 10px;
+    background-color: var(--bg-color);
+}
+
+th, td {
+    border: 2px solid var(--border-color);
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    font-weight: bold;
+}
+
+/* Efecto hover clásico para las filas */
+tbody tr:hover {
+    background-color: var(--menu-hover);
+    color: var(--menu-hover-text);
+}
+
+/* Asegurar que los enlaces dentro de la tabla se vean bien con el hover */
+tbody tr:hover a {
+    color: var(--menu-hover-text);
+}
