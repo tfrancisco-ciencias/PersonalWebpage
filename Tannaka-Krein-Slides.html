@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A note on Tannaka–Krein Duality and Non-Commutative Sets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF8F3;
+  --surface: #F1EEE4;
+  --ink: #1B2433;
+  --muted: #5A6579;
+  --title: #0B2A5B;
+  --navy: #0B2A5B;
+  --gold: #C9A227;
+  --rule: #D9D4C3;
+  --serif: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1630; --surface: #12234A; --ink: #E8ECF4; --muted: #A7B1C6;
+    --title: #F2F4FA; --gold: #D9B53C; --rule: #28396A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1630; --surface: #12234A; --ink: #E8ECF4; --muted: #A7B1C6;
+  --title: #F2F4FA; --gold: #D9B53C; --rule: #28396A; color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); overflow: hidden; }
+
+#viewport { position: relative; width: 100%; height: 100%; overflow: hidden; }
+#stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1280px; height: 720px;
+  transform-origin: center center;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.slide {
+  position: absolute; inset: 0; box-sizing: border-box;
+  padding: 72px 96px 96px;
+  opacity: 0; visibility: hidden; transition: opacity .35s ease;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+}
+.slide.active { opacity: 1; visibility: visible; }
+
+h1, h2, h3 { font-family: var(--serif); color: var(--title); font-weight: 500; margin: 0; }
+h2 { font-size: 46px; line-height: 1.1; letter-spacing: -0.005em; }
+h2::after { content: ""; display: block; width: 72px; height: 3px; background: var(--gold); margin-top: 20px; }
+h3 { font-size: 28px; font-weight: 600; margin-bottom: 10px; }
+.body { flex: 1; display: flex; flex-direction: column; justify-content: center; font-size: 30px; line-height: 1.5; }
+p { margin: 0 0 14px; }
+.body.dense { justify-content: flex-start; padding-top: 22px; font-size: 26px; line-height: 1.45; }
+.body.dense ul li { margin-bottom: 10px; }
+.body.dense .box { margin: 14px 0 0; padding: 16px 28px; }
+.body.dense .box .label { font-size: 24px; }
+.body.dense mjx-container[display="true"] { margin: .3em 0 !important; }
+.body.dense ul + .box + ul { margin-top: 18px; }
+h3.sec { font-size: 26px; margin-bottom: 14px; }
+.body.dense ol.cols2 { columns: 2; column-gap: 56px; padding-left: 36px; }
+.body.dense ol.cols2 li { break-inside: avoid; margin-bottom: 12px; }
+
+ul { list-style: none; padding: 0; margin: 0; }
+ul li { position: relative; padding-left: 34px; margin-bottom: 18px; }
+ul li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 10px; height: 10px; background: var(--gold); transform: rotate(45deg); }
+ol { margin: 0; padding-left: 40px; }
+ol li { margin-bottom: 16px; padding-left: 8px; }
+ol li::marker { color: var(--gold); font-family: var(--serif); font-weight: 600; }
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+.cols.rule > :first-child { border-right: 1px solid var(--rule); padding-right: 56px; }
+
+.box { background: var(--surface); border-left: 5px solid var(--gold); padding: 22px 30px; border-radius: 2px; margin: 10px 0 18px; }
+.box .label { font-family: var(--serif); font-variant: small-caps; letter-spacing: .06em; font-weight: 600; color: var(--title); font-size: 26px; margin-bottom: 6px; }
+.box.thm .label::after { content: "."; }
+em { font-family: var(--serif); font-style: italic; }
+.muted { color: var(--muted); }
+.sample-tag {
+  position: absolute; top: 28px; right: 40px; font-size: 15px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); border: 1px solid var(--rule); padding: 3px 10px; border-radius: 20px;
+}
+
+/* Title slide: same in light and dark */
+.slide.title-slide { background: #0B2A5B; color: #F4F1E6; padding: 96px 110px; justify-content: center; }
+.title-slide h1 { color: #FFFFFF; font-size: 64px; line-height: 1.12; font-weight: 500; max-width: 1000px; }
+.title-slide .gold-rule { width: 110px; height: 4px; background: #D9B53C; margin: 34px 0 34px; }
+.title-slide .author { font-family: var(--serif); font-size: 36px; color: #FFFFFF; margin-bottom: 8px; }
+.title-slide .affil { font-size: 22px; line-height: 1.45; color: #C9D3EA; margin-bottom: 44px; }
+.title-slide .joint { font-family: var(--serif); font-style: italic; font-size: 26px; color: #D9B53C; margin-bottom: 16px; }
+.title-slide .event { font-size: 22px; color: #D9B53C; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+.title-slide .date { font-size: 22px; color: #C9D3EA; margin-top: 6px; }
+.title-slide::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #D9B53C; }
+
+/* Footer + progress (inside stage, above slides) */
+#footer {
+  position: absolute; left: 96px; right: 96px; bottom: 28px; height: 28px; z-index: 5;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 15px; letter-spacing: .04em; color: var(--muted);
+  border-top: 1px solid var(--rule); padding-top: 12px; box-sizing: content-box;
+  transition: opacity .3s;
+}
+#footer .num { font-variant-numeric: tabular-nums; color: var(--title); font-weight: 600; }
+#progress { position: absolute; left: 0; bottom: 0; height: 5px; background: var(--gold); width: 0; z-index: 6; transition: width .35s ease; }
+body.on-title #footer { opacity: 0; }
+body.on-title #progress { opacity: 0; }
+
+/* Steps (click-to-reveal) */
+.step { opacity: 0; transform: translateY(8px); transition: opacity .35s ease, transform .35s ease; }
+.step.shown { opacity: 1; transform: none; }
+
+/* Help hint */
+#hint {
+  position: fixed; right: 16px; top: calc(12px + env(safe-area-inset-top, 0px)); z-index: 20;
+  font-size: 13px; color: var(--muted); background: var(--surface); border: 1px solid var(--rule);
+  padding: 6px 10px; border-radius: 6px; opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+#hint.show { opacity: .95; }
+
+table.pairs { border-collapse: collapse; margin: 0 auto; min-width: 1000px; font-size: 38px; text-align: center; }
+table.pairs th { font-family: var(--serif); font-weight: 600; color: var(--title); font-size: 32px; padding: 10px 40px 14px; border-bottom: 3px solid var(--gold); }
+table.pairs td { padding: 11px 40px; border-bottom: 1px solid var(--rule); }
+table.pairs td:first-child, table.pairs th:first-child, table.pairs td:nth-child(2), table.pairs th:nth-child(2) { border-right: 1px solid var(--rule); }
+table.pairs td:nth-child(3) { font-size: 28px; }
+table.pairs th, table.pairs td { padding-left: 28px; padding-right: 28px; }
+table.pairs tr.step { transform: none; }
+.box.takeaway { font-size: 25px; line-height: 1.4; margin: 18px 0 0; padding: 14px 28px; }
+.box.takeaway b { font-family: var(--serif); color: var(--title); font-variant: small-caps; letter-spacing: .05em; font-size: 28px; }
+
+mjx-container { color: inherit; }
+mjx-container[display="true"] { margin: .5em 0 !important; }
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height: auto; overflow: visible; }
+  :root { padding: 0; }
+  #viewport { height: auto; overflow: visible; }
+  #stage { position: static; transform: none !important; width: auto; height: auto; box-shadow: none; }
+  .slide { position: relative; width: 1280px; height: 720px; opacity: 1 !important; visibility: visible !important; page-break-after: always; break-after: page; }
+  .step { opacity: 1 !important; transform: none !important; }
+  #footer, #progress, #hint { display: none; }
+}
+</style>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], packages: {'[+]': ['ams']} },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body class="on-title">
+<div id="viewport">
+<div id="stage">
+
+  <!-- 1 · Title -->
+  <section class="slide title-slide">
+    <h1>A note on Tannaka–Krein Duality and Non-Commutative Sets</h1>
+    <div class="gold-rule"></div>
+    <div class="author">Francisco J. Torres Ayala</div>
+    <div class="joint">Joint work with Raúl Rodríguez Barrera</div>
+    <div class="affil">Department of Mathematics, Science Faculty<br>Universidad Nacional Autónoma de México (UNAM)</div>
+    <div class="event">SIMA 2026 · CIMAT, Guanajuato</div>
+    <div class="date">November 16, 2026</div>
+  </section>
+
+  <!-- 2 · Pontryagin–van Kampen duality -->
+  <section class="slide">
+    <h2>The Classical Case: Pontryagin–van Kampen Duality</h2>
+    <div class="body dense">
+      <h3 class="sec">Setup and dual group $\widehat{G}$</h3>
+      <ul>
+        <li class="step">Let $G$ be a locally compact abelian (LCA) topological group.</li>
+        <li class="step">Dual group: $\widehat{G} := \operatorname{Hom}_{\text{cont}}(G, \mathbb{T})$, also written $G^* = \widehat{G}$, where $\mathbb{T} = \{z \in \mathbb{C} : \lvert z\rvert = 1\}$.</li>
+        <li class="step">Equipped with pointwise multiplication and the compact-open topology, $\widehat{G}$ is again an LCA group.</li>
+      </ul>
+      <div class="box thm step">
+        <div class="label">Pontryagin–van Kampen Theorem</div>
+        The canonical evaluation map, $\Phi\colon G \longrightarrow (G^*)^*$, defined by
+        $$\Phi(g)(\chi) = \chi(g) \quad (\forall g \in G,\; \chi \in G^*),$$
+        is an isomorphism of topological groups ($G \cong (G^*)^*$).
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Quick anchor examples -->
+  <section class="slide">
+    <h2>Quick Anchor Examples</h2>
+    <div class="body">
+      <table class="pairs">
+        <thead>
+          <tr><th>Group $G$</th><th>Dual group $\widehat{G}$</th><th>Characters $\chi\in\widehat{G}$</th></tr>
+        </thead>
+        <tbody>
+          <tr class="step"><td>$\mathbb{R}$</td><td>$\mathbb{R}$</td><td>$\chi_x(t)=e^{2\pi i x t}$, $x\in\mathbb{R}$</td></tr>
+          <tr class="step"><td>$\mathbb{Z}$</td><td>$\mathbb{T}$</td><td>$\chi_z(n)=z^{n}$, $z\in\mathbb{T}$</td></tr>
+          <tr class="step"><td>$\mathbb{T}$</td><td>$\mathbb{Z}$</td><td>$\chi_m(z)=z^{m}$, $m\in\mathbb{Z}$</td></tr>
+          <tr class="step"><td>$\mathbb{Z}/n\mathbb{Z}$</td><td>$\mathbb{Z}/n\mathbb{Z}$</td><td>$\chi_k(j)=e^{2\pi i jk/n}$, $k\in\mathbb{Z}/n\mathbb{Z}$</td></tr>
+        </tbody>
+      </table>
+      <div class="box takeaway step"><b>Key Takeaway.</b> When $G$ is abelian, $\widehat{G}$ is a group because the pointwise product of two characters is a character as well.</div>
+    </div>
+  </section>
+
+  <!-- 3c · Other pillars -->
+  <section class="slide">
+    <h2>Behind Duality: Group Structure </h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition</div>
+        A topological group $H$ is <em>compactly generated</em> if there is a compact subset $K \subseteq H$ such that
+        $$\langle K\rangle = H.$$
+      </div>
+      <div class="box step">
+        <div class="label">Theorem</div>
+        Every LCA group $G$ has an open subgroup $H$ which is compactly generated.
+      </div>
+    </div>
+  </section>
+
+  <!-- 3d · Duality in a nutshell -->
+  <section class="slide">
+    <h2>Duality in a Nutshell</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0; text-align:center">
+        $$\begin{array}{ccccccccc}
+        0 &amp; \longrightarrow &amp; H &amp; \longrightarrow &amp; G &amp; \longrightarrow &amp; G/H &amp; \longrightarrow &amp; 0 \\[4pt]
+        &amp; &amp; \phantom{{\scriptstyle\Phi_H}}\Big\downarrow{\scriptstyle\Phi_H} &amp; &amp; \phantom{{\scriptstyle\Phi_G}}\Big\downarrow{\scriptstyle\Phi_G} &amp; &amp; \phantom{{\scriptstyle\Phi_{G/H}}}\Big\downarrow{\scriptstyle\Phi_{G/H}} &amp; &amp; \\[4pt]
+        0 &amp; \longrightarrow &amp; H^{**} &amp; \longrightarrow &amp; G^{**} &amp; \longrightarrow &amp; (G/H)^{**} &amp; \longrightarrow &amp; 0
+        \end{array}$$
+      </div>
+      <div class="step" style="margin-top:18px">
+        <p style="margin-bottom:6px">It is enough to prove duality for:</p>
+        <p style="padding-left:34px; margin:0">(i) compactly generated groups ($H$)<br>(ii) discrete groups ($G/H$)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3b · Characters separate points -->
+  <section class="slide">
+    <h2>Tools of the Trade</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem</div>
+        Let $G$ be an LCA group. Then:<br>
+        (i) $\widehat{G}$ separate the points of $G$: if $g_1 \neq g_2$, then there is $\chi \in \widehat{G}$ with $\chi(g_1) \neq \chi(g_2)$;<br>
+        (ii) if in addition $G$ is compact, $\mathcal{A} = \operatorname{span}\,\widehat{G}$, also called the “trigonometric polynomials”, is uniformly dense in $C(G)$.
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step"><b>(i) ⇒ (ii):</b> $\mathcal{A}$ contains the constants, is closed under products, and under conjugation since $\overline{\chi} = \chi^{-1} \in \widehat{G}$. With (i), the Stone–Weierstrass theorem gives density.</li>
+        
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 · Why duality matters -->
+  <section class="slide">
+    <h2>Why Duality Matters: Key Applications (1)</h2>
+    <div class="body dense">
+      <h3 class="sec">Unifying classical harmonic analysis</h3>
+      <ul>
+        <li class="step"><b>Fourier Transform:</b> unifies Fourier series ($G = \mathbb{T}$), Fourier integrals ($G = \mathbb{R}^n$), and Discrete Fourier Transforms ($G = \mathbb{Z}/n\mathbb{Z}$) under one framework:</li>
+      </ul>
+      <div class="box step">
+        $$\mathcal{F}\colon L^1(G) \longrightarrow C_0(\widehat{G}), \qquad \widehat{f}(\chi) = \int_G f(g)\overline{\chi(g)}\,d\mu(g)$$
+      </div>
+      <ul>
+        <li class="step"><b>Structure Theory:</b> translates hard topological properties of $G$ into dual properties of $\widehat{G}$ (e.g., $G$ is compact $\iff \widehat{G}$ is discrete).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 · Why duality matters (2) -->
+  <section class="slide">
+    <h2>Why Duality Matters: Key Applications (2)</h2>
+    <div class="body dense">
+      <h3 class="sec">Building block for non-abelian representation theory</h3>
+      <ul>
+        <li class="step"><b>Mackey’s Little Group Method:</b> for semidirect products $G = N \rtimes K$ with $N$ abelian and the $K$-action on $\widehat{N}$ regular, the irreducible representations of $G$ are classified via $K$-orbits in the Pontryagin dual $\widehat{N}$, together with the irreducible representations of the stabilizers (little groups).</li>
+      </ul>
+      <div class="box step">
+        <div class="label">Example: Heisenberg group</div>
+        $H_3(\mathbb{R}) \cong \mathbb{R}^2 \rtimes \mathbb{R}$. Using $\widehat{\mathbb{R}^2} \cong \mathbb{R}^2$, orbit analysis yields all irreducible unitary representations.
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Breaking commutativity -->
+  <section class="slide">
+    <h2 style="font-size:42px">Breaking Commutativity: When Pontryagin Duality Fails</h2>
+    <div class="body dense">
+      <h3 class="sec">Why 1-dimensional characters fail</h3>
+      <ul>
+        <li class="step">Any continuous homomorphism $\chi\colon G \to \mathbb{T}$ must be trivial on the commutator subgroup $[G, G]$:</li>
+      </ul>
+      <div class="step">$$\chi(ghg^{-1}h^{-1}) = 1$$</div>
+      <ul style="margin-top:10px">
+        <li class="step"><b>Extreme failure:</b> for simple non-abelian compact groups like $SU(2)$ or $SO(3)$, $\overline{[G,G]} = G$, so the only 1D character is trivial ($\widehat{G} = \{1\}$).</li>
+      </ul>
+      <div class="box step">
+        <div class="label">Conclusion</div>
+        1D representations are blind to non-abelian structure; we must move to higher-dimensional unitary representations.
+      </div>
+    </div>
+  </section>
+
+  <!-- 9a · Group representations -->
+  <section class="slide">
+    <h2>Group Representations</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition (representation)</div>
+        A <em>representation</em> of a locally compact group $G$ on a Hilbert space $\mathcal{H}$ is a group homomorphism 
+        $$\pi\colon G \to GL(\mathcal{H}) $$
+        that is strongly continuous ($g \mapsto \pi(g)\xi$ is continuous for every $\xi \in \mathcal{H}$). It is <em>unitary</em> if every $\pi(g)$ is a unitary operator.
+        We denote $H_{\pi}=H$ for convenience.
+      </div>
+      <div class="box step">
+        <div class="label">Definition (irreducible representation)</div>
+        A unitary representation $\pi$ of $G$ on a Hilbert space $\mathcal{H} \neq \{0\}$ is <em>irreducible</em> if the only closed subspaces of $\mathcal{H}$ invariant under $\pi(G)$ are $\{0\}$ and $\mathcal{H}$.
+      </div>
+    </div>
+  </section>
+
+  <!-- 9b · Equivalence of representations -->
+  <section class="slide">
+    <h2>Equivalence of Representations</h2>
+    <div class="body">
+      <div class="box step">
+        <div class="label">Definition (equivalence)</div>
+        Two unitary representations $\pi_1\colon G \to U(\mathcal{H}_1)$ and $\pi_2\colon G \to U(\mathcal{H}_2)$ are <em>equivalent</em>, written $\pi_1 \cong \pi_2$, if there is a unitary operator $U\colon \mathcal{H}_1 \to \mathcal{H}_2$ such that
+        $$U\pi_1(g) = \pi_2(g)U \quad \text{for all } g \in G.$$
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · Gelfand–Raikov -->
+  <section class="slide">
+    <h2>Some things never change: Point Separation</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem (Gelfand–Raikov, 1943)</div>
+        Let $G$ be any locally compact group. For every $g \neq e$ in $G$, there exists an irreducible unitary representation $\pi$ such that
+        $$\pi(g) \neq I.$$
+      </div>
+      <div class="box step">
+        <div class="label">Takeaway</div>
+        Even without commutativity, irreducible unitary representations separate the points of $G$: no group information is lost.
+      </div>
+    </div>
+  </section>
+
+  <!-- 6b · Advantage of compact groups -->
+  <section class="slide">
+    <h2>The Advantage of Compact Groups</h2>
+    <div class="body">
+      <ul>
+        <li class="step"><b>Structure:</b> we need not worry about structural issues, as in the general abelian case.<span class="muted" style="display:block;font-size:24px;line-height:1.4;margin-top:4px">For compact abelian $G$ there is no need to reduce to compactly generated subgroups.</span></li>
+        <li class="step"><b>Representations:</b> the representation theory of compact groups is much easier.<span class="muted" style="display:block;font-size:24px;line-height:1.4;margin-top:4px">Every representation is unitarizable and splits into finite-dimensional irreducibles (next slide).</span></li>
+        <li class="step"><b>Haar measure:</b> there is $\mu$, a unique Haar probability measure.<span class="muted" style="display:block;font-size:24px;line-height:1.4;margin-top:4px">Linked to a faithful state.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7 · Representations of compact groups -->
+  <section class="slide">
+    <h2>Representations of Compact Groups</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem (unitarity for compact groups)</div>
+        Let $G$ be a compact group and $\pi$ a representation of $G$ on a Hilbert space $\mathcal{H}$. Then $\mathcal{H}$ has an equivalent inner product $\langle\cdot,\cdot\rangle'$ for which $\pi$ is unitary; that is, $\pi$ is similar to a unitary representation.
+      </div>
+      <div class="box step">
+        <div class="label">Theorem (complete reducibility)</div>
+        Let $\pi$ be a unitary representation of a compact group $G$ on $\mathcal{H}$. Then
+        $$\mathcal{H} = \bigoplus_{i \in I} \mathcal{H}_i \quad \text{(orthogonal Hilbert sum)},$$
+        where each $\mathcal{H}_i$ is a closed, finite-dimensional, $\pi(G)$-invariant subspace on which $\pi$ restricts to an irreducible representation.
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · Dual is no longer a group -->
+  <section class="slide">
+    <h2>Dual group structure: Gone</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step">Given two irreducible unitary representations $\rho, \sigma$ of a compact group $G$, their tensor product $(\rho \otimes \sigma)(g) = \rho(g) \otimes \sigma(g)$ is again a finite-dimensional unitary representation of $G$. But it might not be irreducible.</li>
+        <li class="step">By complete reducibility, it decomposes back into irreducibles:</li>
+      </ul>
+      <div class="box step">
+        $$\rho \otimes \sigma \cong \bigoplus_{\pi} m_{\rho,\sigma}^{\pi}\, \pi$$
+        <span class="muted" style="font-size:22px">The sum runs over irreducible representations $\pi$ up to equivalence, with multiplicities $m_{\rho,\sigma}^{\pi} \in \mathbb{N}$, only finitely many nonzero.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 · Conjugate representations -->
+  <section class="slide">
+    <h2>Conjugate (Contragredient) Representations</h2>
+    <div class="body dense">
+      <h3 class="sec">Why conjugate representations are invisible in the abelian case</h3>
+      <ul>
+        <li class="step">For a 1D character $\chi\colon G \to \mathbb{T}$, complex conjugation is just the group inverse:</li>
+      </ul>
+      <div class="box step">
+        $$\overline{\chi(g)} = \chi(g)^{-1} \quad \text{for all } g \in G, \qquad \text{so} \qquad \overline{\chi} = \chi^{-1} \in \widehat{G}.$$
+      </div>
+      <ul>
+        <li class="step">Thus, conjugation requires no extra structure: it is already built into the group operation of $\widehat{G}$.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 16 · Conjugate representations, general case -->
+  <section class="slide">
+    <h2>Conjugate Representations: The General Case</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition (conjugate representation)</div>
+        Let $\pi$ be a unitary representation of $G$ on $\mathcal{H}$, and $\overline{\mathcal{H}}$ the conjugate Hilbert space ($\mathcal{H}$ with scalar multiplication conjugated). 
+        The <em>conjugate representation</em> is $\overline{\pi}(g) := \pi(g)$ acting on $\overline{\mathcal{H}}$. 
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">In an orthonormal basis, $\overline{\pi}(g)$ is the entrywise conjugate of the matrix $\pi(g)$.</li>
+        <li class="step">$\pi$ is irreducible if and only if $\overline{\pi}$ is.</li>
+        <li class="step">For non-abelian $G$, conjugation $\pi \mapsto \overline{\pi}$ is genuinely an extra structure on the dual.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 17 · Example: pi not equivalent to its conjugate -->
+  <section class="slide">
+    <h2>Conjugation Is Genuinely New: An Example</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step">Let $\pi\colon SU(3) \to U(3)$ be the representation $\pi(g) = g$. Then $\pi \not\cong \overline{\pi}$.</li>
+        <li class="step">Take $g = e^{2\pi i/3} I \in SU(3)$, which has $\det g = e^{2\pi i} = 1$. The characters (traces) differ:</li>
+      </ul>
+      <div class="box step">
+        $$\operatorname{Tr}(\pi(g)) = 3e^{2\pi i/3} \neq 3e^{-2\pi i/3} = \operatorname{Tr}(\overline{\pi}(g))$$
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">Equivalent representations have the same character, since $\operatorname{Tr}(UAU^{-1}) = \operatorname{Tr}(A)$. Hence $\pi$ and $\overline{\pi}$ are not equivalent.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 18 · Intertwinings -->
+  <section class="slide">
+    <h2>Intertwinings</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition (intertwining operator)</div>
+        Let $\rho, \sigma$ be representations of $G$ on Hilbert spaces $\mathcal{H}_\rho, \mathcal{H}_\sigma$. An <em>intertwining operator</em> between $\rho$ and $\sigma$ is a bounded linear operator $T\colon \mathcal{H}_\rho \to \mathcal{H}_\sigma$ such that
+        $$T\rho(g) = \sigma(g)T \quad \text{for all } g \in G.$$
+      </div>
+      <div class="box step">
+        <div class="label">Theorem (averaging)</div>
+        Let $G$ be a compact group with normalized Haar measure $\mu$, let $\rho, \sigma$ be unitary representations of $G$, and let $T\colon \mathcal{H}_\rho \to \mathcal{H}_\sigma$ be a bounded operator. Then
+        $$\tilde{T} = \int_G \sigma(g)^*\,T\,\rho(g)\,d\mu(g)$$
+        is an intertwining operator between $\rho$ and $\sigma$.
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 · Schur's lemma -->
+  <section class="slide">
+    <h2>Schur Orthogonality </h2>
+    <div class="body dense">
+      <h3 class="sec">Schur’s Lemma</h3>
+      <ul>
+        <li class="step">Let $\pi, \rho$ be finite-dimensional unitary irreducible representations of a compact group $G$, and let $T\colon \mathcal{H}_\pi \to \mathcal{H}_\rho$ be an intertwining operator ($T\pi(g) = \rho(g)T$ for all $g \in G$):</li>
+        <li class="step">If $\pi \not\cong \rho$, then $T = 0$.</li>
+        <li class="step">If $\pi = \rho$, then $T = \lambda I$ for some $\lambda \in \mathbb{C}$.</li>
+      </ul>
+    
+      <h3 class="step">Orthogonality of matrix coefficients</h3>
+      <ul>
+        <li class="step">Taking $T=E_{kq}:H_{\pi}\to H_{\rho}$, rank-one operator, produces an intertwiner, yielding:</li>
+        
+      </ul>
+      <div class="box step">
+        $$\int_G  v^{(\pi)}_{jk}(g)\,\overline{v^{(\rho)}_{p,q}(g)} d\mu(g) = \frac{1}{d_\pi}\,\delta_{\pi,\rho}\,\delta_{j,p}\,\delta_{k,q}$$
+        <span class="muted" style="font-size:22px">where, with respect to an orthonormal basis, $\pi(g)=[v_{jk}^{(\pi)}]$.</span>
+      </div>
+
+    </div>
+  </section>
+
+  
+  <!-- 20 · Krein algebras: setup and axioms 1-2 -->
+  <section class="slide">
+    <h2>Axiomatizing the Dual: Krein Algebras (1)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Setup</div>
+        A <em>Krein algebra</em> is a triple $(A, \mathcal{B}, N)$, where $A$ is a unital, associative, commutative complex algebra with an involution $x \mapsto x^*$ (conjugate-linear, $(xy)^* = y^*x^*$, $(x^*)^* = x$), and $\mathcal{B}$ is a Hamel basis of $A$ satisfying the six axioms below.
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step"><b>Axiom 1 (Blocks).</b> $\mathcal{B}$ is partitioned as $\{v^{(\alpha)}_{jk} : \alpha \in N,\ 1 \le j,k \le d_\alpha\}$; for each $\alpha$ we form the matrix $V^{(\alpha)} = [v^{(\alpha)}_{jk}]$.</li>
+        <li class="step"><b>Axiom 2 (Identity block).</b> There is $0 \in N$ with $d_0 = 1$ and $V^{(0)} = [1]$.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 21 · Krein algebras: axioms 3-4 -->
+  <section class="slide">
+    <h2>Axiomatizing the Dual: Krein Algebras (2)</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step"><b>Axiom 3 (Conjugate blocks).</b> For every $\alpha \in N$ there are $\bar{\alpha} \in N$ with $d_{\bar{\alpha}} = d_\alpha$ and a unitary matrix $U_\alpha \in U(d_\alpha)$ such that</li>
+      </ul>
+      <div class="step">$$\overline{V^{(\alpha)}} := \bigl[(v^{(\alpha)}_{jk})^*\bigr] = U_\alpha V^{(\bar{\alpha})} U_\alpha^{-1}.$$</div>
+      <ul style="margin-top:10px">
+        <li class="step"><b>Axiom 4 (Kronecker product decomposition).</b> For all $\alpha, \beta \in N$, the Kronecker product $V^{(\alpha)} \otimes V^{(\beta)}$ is unitarily equivalent to a direct sum of basis blocks:</li>
+      </ul>
+      <div class="step">$$W_{\alpha\beta}\bigl(V^{(\alpha)} \otimes V^{(\beta)}\bigr)W_{\alpha\beta}^{-1} = \bigoplus_{\gamma \in N} m_{\alpha\beta}^\gamma\, V^{(\gamma)}.$$</div>
+      <p class="muted step" style="font-size:22px; margin:0">Here $W_{\alpha\beta}$ is unitary, and the multiplicities $m_{\alpha\beta}^\gamma \in \mathbb{N}$ are nonzero for only finitely many $\gamma$.</p>
+    </div>
+  </section>
+
+  <!-- 22 · Krein algebras: axioms 5-6 -->
+  <section class="slide">
+    <h2>Axiomatizing the Dual: Krein Algebras (3)</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step"><b>Axiom 5 (Trivial-block multiplicity).</b> In the decomposition of Axiom 4, the identity block $V^{(0)}$ appears if and only if $V^{(\alpha)} \cong \overline{V^{(\beta)}}$, and in that case it appears exactly once.</li>
+        <li class="step"><b>Axiom 6 (Block unitarity).</b> For every $\alpha \in N$, the matrix block $V^{(\alpha)}$ is unitary:</li>
+      </ul>
+      <div class="step">$$\sum_{r=1}^{d_\alpha} v^{(\alpha)}_{jr}\,(v^{(\alpha)}_{kr})^* = \delta_{jk}\,1 = \sum_{r=1}^{d_\alpha} (v^{(\alpha)}_{rj})^*\,v^{(\alpha)}_{rk}.$$</div>
+    </div>
+  </section>
+
+  <!-- 23 · Krein algebra of a compact group: coefficients -->
+  <section class="slide">
+    <h2>The Krein Algebra of a Compact Group (1)</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step">Let $G$ be a compact topological group, and let $\widehat{G}$ denote a set of complete representatives of the unitary irreducible representations of $G$ up to equivalence.</li>
+        <li class="step">For $\alpha \in \widehat{G}$, let $\pi_\alpha\colon G \to U(d_\alpha)$ be the corresponding representation, written in an orthonormal basis (irreducible unitary representations of a compact group are finite-dimensional).</li>
+      </ul>
+      <div class="box step">
+        <div class="label">Matrix coefficients</div>
+        $$v^{(\alpha)}_{jk}(g) := \bigl(\pi_\alpha(g)\bigr)_{jk}, \qquad 1 \le j,k \le d_\alpha, \quad g \in G.$$
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 · Krein algebra of a compact group: definition -->
+  <section class="slide">
+    <h2>The Krein Algebra of a Compact Group (2)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition</div>
+        Take $N = \widehat{G}$, $\mathcal{B}_G = \{v^{(\alpha)}_{jk} : \alpha \in N,\ 1 \le j,k \le d_\alpha,\alpha \in N\}$
+        (matrix coefficients of $\pi_\alpha \in \alpha$ with respect to an orthonormal basis) and denote
+        $$\mathcal{E}(G) := \operatorname{span}\,\mathcal{B}_G \subseteq C(G),$$
+        with pointwise operations and involution $f^*(g) = \overline{f(g)}$. 
+        
+        <p>Then $(\mathcal{E}(G), \mathcal{B}_G, \hat{G})$ is a Krein algebra.</p>
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">The $v^{(\alpha)}_{jk}$ are linearly independent by Schur orthogonality, so $\mathcal{B}_G$ is a Hamel basis. The other axioms come from the trivial representation, conjugate and tensor product representations, and unitarity of each $\pi_\alpha(g)$.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 25 · Reconstructing the group: structure space and product -->
+  <section class="slide">
+    <h2>Reconstructing the Group from a Krein Algebra</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Structure space</div>
+        Let $(A, \mathcal{B}, N)$ be a Krein algebra. Its structure space (the group of $*$-characters) is
+        $$\mathcal{G}(A) := \bigl\{\omega \in \operatorname{Hom}_{\text{alg}}(A, \mathbb{C}) \setminus \{0\} : \omega(x^*) = \overline{\omega(x)} \;\; \forall x \in A\bigr\}.$$
+      </div>
+      <div class="box step">
+        <div class="label">Group operation (block-matrix multiplication)</div>
+        For $\omega_1, \omega_2 \in \mathcal{G}(A)$, define $\omega_1 \cdot \omega_2$ on the basis $\mathcal{B}$ by
+        $$(\omega_1 \cdot \omega_2)\bigl(v^{(\alpha)}_{jk}\bigr) := \sum_{r=1}^{d_\alpha} \omega_1\bigl(v^{(\alpha)}_{jr}\bigr)\,\omega_2\bigl(v^{(\alpha)}_{rk}\bigr).$$
+      </div>
+    </div>
+  </section>
+
+  <!-- 26 · Reconstructing the group: block form and topology -->
+  <section class="slide">
+    <h2>NC point of view</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step">A nonzero, $*$-preserving linear map $\omega\colon A \to \mathbb{C}$ lies in $\mathcal{G}(A)$ if and only if 
+          $$\omega\bigl(V^{(\alpha)} \otimes V^{(\beta)}\bigr) = \omega\bigl(V^{(\alpha)}\bigr) \otimes \omega\bigl(V^{(\beta)}\bigr)$$ 
+          for all $\alpha, \beta \in N$ ($\omega$ applied entrywise).</li>
+        <li class="step">Equivalently, group multiplication is blockwise: for all $\alpha \in N$,
+          $$(\omega_1 \cdot \omega_2)\bigl(V^{(\alpha)}\bigr) = \omega_1\bigl(V^{(\alpha)}\bigr)\,\omega_2\bigl(V^{(\alpha)}\bigr).$$</li>
+        
+      </ul>
+      <div class="box step">
+        <div class="label">Identity and inverse</div>
+        <b>Identity:</b> $\varepsilon\bigl(V^{(\alpha)}\bigr) = I_{d_\alpha}$, that is, $\varepsilon\bigl(v^{(\alpha)}_{jk}\bigr) = \delta_{jk}$ for all $\alpha$.<br>
+        <b>Inverse:</b> $\omega^{-1}\bigl(V^{(\alpha)}\bigr) = \omega\bigl(V^{(\alpha)}\bigr)^{-1}$, that is, $\omega^{-1}\bigl(v^{(\alpha)}_{jk}\bigr) = \overline{\omega\bigl(v^{(\alpha)}_{kj}\bigr)}$.
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 · Reconstructing the group: topology -->
+  <section class="slide">
+    <h2>Reconstructing the topology</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Topology</div>
+        Equip $\mathcal{G}(A)$ with the weak-$*$ topology (pointwise convergence on $A$). By Tychonoff’s theorem and block unitarity, $\mathcal{G}(A)$ is compact Hausdorff. 
+      </div>
+      
+    </div>
+
+    <div class="body dense">
+  <div class="box step" style="margin-top:0">
+        <div class="label">Theorem</div>
+        $\mathcal{G}(A)$ is a compact Hausdorff topological group. 
+      </div>
+  </div>
+  </section>
+
+  <!-- 28 · Tannaka–Krein duality: Tannaka -->
+  <section class="slide">
+    <h2>Tannaka–Krein Duality Theorem (1)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem 1 (Group reconstruction; Tannaka, 1938)</div>
+        Let $G$ be any compact group and $\mathcal{E}(G)$ its Krein algebra. The evaluation map $\Phi\colon G \longrightarrow \mathcal{G}(\mathcal{E}(G))$, defined by $\Phi(g)(f) = f(g)$, is an isomorphism of topological groups:
+        $$G \cong \mathcal{G}(\mathcal{E}(G)).$$
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">A compact group is recovered from the algebra $\mathcal{E}(G)$ of its matrix coefficients.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 28b · Sketch of the proof: positivity -->
+  <section class="slide">
+    <h2>Sketch of the Proof</h2>
+    <div class="body dense">
+      <h3 class="sec">The secret ingredient: Positivity</h3>
+      <p class="step">Let $\eta\colon \mathcal{E}(G) \to \mathbb{C}$ be a linear functional. The following are equivalent:</p>
+      <ol>
+        <li class="step">$\eta\bigl(\lvert f\rvert^2\bigr) \geq 0$ for all $f \in \mathcal{E}(G)$;</li>
+        <li class="step">$\eta(h) \geq 0$ for all $h \in \mathcal{E}^+(G)$.</li>
+      </ol>
+      <div class="box step">
+        Each of these implies
+        $$\lvert\eta(f)\rvert \leq \eta(1)\,\lVert f\rVert_\infty \qquad (f \in \mathcal{E}(G)).$$
+        <span class="muted" style="font-size:22px">Here $\mathcal{E}^+(G) = \{h \in \mathcal{E}(G) : h \geq 0\}$.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 28c · Sketch of the proof: surjectivity -->
+  <section class="slide">
+    <h2>Sketch of the Proof (2)</h2>
+    <div class="body dense">
+      <h3 class="sec">Surjectivity</h3>
+      <p class="step">Let $\omega\colon \mathcal{E}(G) \to \mathbb{C}$ be a nonzero $*$-algebra homomorphism (that is, $\omega \in \mathcal{G}(\mathcal{E}(G))$). Then</p>
+      <div class="box step">
+        $$\omega\bigl(\lvert f\rvert^2\bigr) = \omega(f)\,\omega(\overline{f}) = \lvert\omega(f)\rvert^2 \geq 0.$$
+      </div>
+      <p class="step" style="margin-top:18px">By the previous slide, $\lvert\omega(f)\rvert \leq \omega(1)\,\lVert f\rVert_\infty = \lVert f\rVert_\infty$, so the linear and multiplicative map $\omega$ is continuous for the uniform norm. Hence it extends to $\tilde{\omega}\colon \overline{\mathcal{E}(G)} \to \mathbb{C}$, where the closure is taken in the uniform norm.</p>
+    </div>
+  </section>
+
+  <!-- 28d · Sketch of the proof: surjectivity, conclusion -->
+  <section class="slide">
+    <h2>Sketch of the Proof (3)</h2>
+    <div class="body dense">
+      <h3 class="sec">Surjectivity (continued)</h3>
+      <ul>
+        <li class="step">But $\mathcal{E}(G)$ is an algebra, contains the constants, is closed under conjugation and separates the points of $G$. Hence $\overline{\mathcal{E}(G)} = C(G)$.</li>
+        <li class="step">In conclusion, $\tilde{\omega}\colon C(G) \to \mathbb{C}$ is a linear, multiplicative, nonzero map. Hence there is $g \in G$ such that
+          $$\tilde{\omega}(f) = f(g) \quad \text{for all } f \in C(G).$$</li>
+        <li class="step">In particular $\omega = \Phi(g)$, so $\Phi$ is surjective.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 29 · Tannaka–Krein duality: Krein -->
+  <section class="slide">
+    <h2>Tannaka–Krein Duality Theorem (2)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem 2 (Algebra characterization; Krein, 1949)</div>
+        Let $(A, \mathcal{B}, N)$ be any abstract Krein algebra, and set $G := \mathcal{G}(A)$. Then the map $\Psi\colon A \longrightarrow \mathcal{E}(G)$ sending $x \mapsto \widehat{x}$, where $\widehat{x}(\omega) = \omega(x)$, is an isomorphism of Krein algebras:
+        $$(A, \mathcal{B}, N) \cong \bigl(\mathcal{E}(\mathcal{G}(A)),\, \mathcal{B}_{\mathcal{G}(A)},\, \widehat{\mathcal{G}(A)}\bigr).$$
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">Every abstract Krein algebra is the Krein algebra of a compact group, namely $\mathcal{G}(A)$.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 35 · Revisiting the axioms -->
+  <section class="slide">
+    <h2>Revisiting the Axioms</h2>
+    <div class="body dense">
+      <ol class="cols2">
+        <li class="step"><b>Basis given in blocks:</b> $\mathcal{B} = \{V^{(\alpha)}\}_{\alpha \in N}$.</li>
+        <li class="step"><b>Trivial block:</b> $V^{(0)} = [1]$.</li>
+        <li class="step"><b>Conjugates:</b> up to unitary equivalence, closed under conjugation.</li>
+        <li class="step"><b>Tensor products:</b> up to unitary equivalence, closed under tensor products.</li>
+        <li class="step"><b>Trivial block multiplicity.</b></li>
+        <li class="step"><b>Unitary blocks.</b></li>
+      </ol>
+      <div class="box step" style="margin-top:22px">
+        <div class="label">The less clear: Trivial block multiplicity.</div>
+        This axiom hides positivity and the Haar measure. After all, if Tannaka’s theorem recovers $G$ from its Krein algebra $\mathcal{E}(G)$, 
+        how is the probability Haar measure $\mu$ represented in an abstract Krein algebra?
+      </div>
+    </div>
+  </section>
+
+  <!-- 36 · Equivalent definition: Haar functional -->
+  <section class="slide">
+    <h2>Haar Functional</h2>
+    <div class="body dense">
+      <ul>
+        <li class="step">Let $(A, \mathcal{B}, N)$ be a Krein algebra, with $\mathcal{B} = \{V^{(\alpha)}\}_{\alpha \in N}$ and $V^{(\alpha)} = \bigl[v^{(\alpha)}_{jk}\bigr]$, $1 \le j,k \le d_\alpha$.</li>
+      </ul>
+      <div class="box step">
+        <div class="label">Definition (Haar functional)</div>
+        The <em>Haar functional</em> of $(A, \mathcal{B}, N)$ is the linear map $h\colon A \to \mathbb{C}$ such that
+        $$h\bigl(v^{(\alpha)}_{jk}\bigr) = \begin{cases} 1 & \text{if } \alpha = 0,\\ 0 & \text{if } \alpha \neq 0. \end{cases}$$
+      </div>
+      <ul style="margin-top:18px">
+        <li class="step">For $A = \mathcal{E}(G)$, the Haar functional is integration against the Haar probability measure, $h(f) = \int_G f\,d\mu$, because $\int_G v^{(\alpha)}_{jk}\,d\mu = 0$ for $\alpha \neq 0$ by Schur orthogonality.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 37 · Lemma: Haar functional is a state -->
+  <section class="slide">
+    <h2>From a humble Functional to an important State</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Lemma</div>
+        The Haar functional is a state: $h(1) = 1$ and $h(aa^*) \geq 0 \qquad \text{for all } a \in A.$
+      </div>
+      <div class="box step">
+        <div class="label">Even more</div>
+        $$h\Bigl(v^{(\alpha)}_{jk}\,\bigl(v^{(\beta)}_{pq}\bigr)^*\Bigr) = \frac{1}{d_\alpha}\,\delta_{\alpha\beta}\,\delta_{jp}\,\delta_{kq}.$$
+      </div>
+    </div>
+  </section>
+
+  <!-- 38 · Equivalent definition (2): assumptions -->
+  <section class="slide">
+    <h2>Equivalent Definition </h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Assumptions</div>
+        Let $A$ be a unital commutative $*$-algebra with a Hamel basis given by blocks $\mathcal{B} = \{V^{(\alpha)}\}_{\alpha \in N}$ that satisfy Axioms 1–6, except Axiom 5. Let $h\colon A \to \mathbb{C}$ denote the linear map given by
+        $$h\bigl(v^{(\alpha)}_{jk}\bigr) = \begin{cases} 1 & \text{if } \alpha = 0,\\ 0 & \text{if } \alpha \neq 0. \end{cases}$$
+      </div>
+      <div class="box step" style="margin-top:0">
+      <div class="label"> Theorem (Rodríguez-T)</div>
+      If in addition $h$ is a state and satisfies
+        $$h\Bigl(v^{(\alpha)}_{jk}\,\bigl(v^{(\beta)}_{pq}\bigr)^*\Bigr) = \frac{1}{d_\alpha}\,\delta_{\alpha\beta}\,\delta_{jp}\,\delta_{kq},$$
+        then $(A, \mathcal{B}, N)$ satisfies Axiom 5. Hence $(A, \mathcal{B}, N)$ is a Krein algebra.  
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- 40 · Products of Krein algebras: definition -->
+  <section class="slide">
+    <h2>Products of Krein Algebras (1)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Definition (product)</div>
+        Let $(A_1, \mathcal{B}_1, N_1)$ and $(A_2, \mathcal{B}_2, N_2)$ be two Krein algebras with Haar functionals $h_1$ and $h_2$. We defined their product as
+        $$\begin{gathered}(A_1, \mathcal{B}_1, N_1) \times (A_2, \mathcal{B}_2, N_2) \\ := (A_1 \otimes A_2,\ \mathcal{B}_1 \otimes \mathcal{B}_2,\ N_1 \times N_2),\end{gathered}$$
+        where $\mathcal{B}_1 \otimes \mathcal{B}_2 = \bigl\{V^{(\alpha_1)} \otimes V^{(\alpha_2)}\bigr\}_{(\alpha_1, \alpha_2) \in N_1 \times N_2}$.
+      </div>
+    </div>
+  </section>
+
+  <!-- 41 · Products of Krein algebras: theorem -->
+  <section class="slide">
+    <h2>Products of Krein Algebras (2)</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem (Rodríguez-T)</div>
+        $(A_1 \otimes A_2, \mathcal{B}_1 \otimes \mathcal{B}_2, N_1 \times N_2)$ is a Krein algebra with Haar functional $h_1 \otimes h_2$.
+      </div>
+      <div class="box step">
+        <div class="label">In consequence</div>
+        $$\begin{gathered}(\mathcal{E}(G_1), \mathcal{B}_{G_1}, \widehat{G}_1) \times (\mathcal{E}(G_2), \mathcal{B}_{G_2}, \widehat{G}_2) \\ \cong (\mathcal{E}(G_1 \times G_2),\ \mathcal{B}_{G_1 \times G_2},\ \widehat{G_1 \times G_2}).\end{gathered}$$
+        This is a non-commutative analogue of the fact that for LCA groups, $$\widehat{G_1 \times G_2} \cong \widehat{G}_1 \times \widehat{G}_2.$$
+      </div>
+    </div>
+  </section>
+
+  <!-- 42 · Construction of Krein algebras: setup -->
+  <section class="slide">
+    <h2>NC sets and Krein Algebras</h2>
+    <div class="body dense">
+      <p class="step">Let $\tilde{A}$ be a unital commutative $*$-algebra. Assume there are:</p>
+      <ol>
+        <li class="step">a set of indices $N$ and, for each $\nu \in N$, a natural number $d_\nu \in \mathbb{N}$ and a set $\Omega_\nu \subset U_{d_\nu}(\tilde{A})$;</li>
+        <li class="step">$A$ is the  $*$-subalgebra of $\tilde{A}$ generated by the entries of the matrices in $\Omega_\nu$, $\nu \in N$.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 43 · Construction of Krein algebras: properties 1-4 -->
+  <section class="slide">
+    <h2>NC multiplicative sets</h2>
+    <div class="body dense">
+      <p class="step">Suppose the following properties hold:</p>
+      <ol>
+        <li class="step">There is a unique $0 \in N$ such that $d_0 = 1$ and $\Omega_0 = \{[1]\}$.</li>
+        <li class="step">For each $\nu \in N$ and $S \in U_{d_\nu}(\mathbb{C})$, we have $S^*\Omega_\nu S = \Omega_\nu$.</li>
+        <li class="step">For each $\nu \in N$ there is $\bar{\nu} \in N$ such that $\overline{\Omega_\nu} \subseteq \Omega_{\bar{\nu}}$ (entrywise conjugate matrices).</li>
+        <li class="step">For each $V_1 \in \Omega_{\mu_1}$ and $V_2 \in \Omega_{\mu_2}$, there are $\nu_1, \dots, \nu_k \in N$ and $W_i \in \Omega_{\nu_i}$ such that $V_1 \otimes V_2 \cong \bigoplus_{i=1}^k W_i$.</li>
+        <li class="step">For $V \in \Omega_{\mu}$ and $V' \in \Omega_{\mu'}$, $V$ and $V'$ are unitarily equivalent  
+          if and only if $\mu = \mu'$.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 44 · Construction of Krein algebras: property 5 and conclusion -->
+  <section class="slide">
+    <h2>A Construction of Krein Algebras</h2>
+    <div class="body dense">
+      
+        <p >In addition, assume there is a linear functional $h\colon A \to \mathbb{C}$ such that
+          <ul style="margin-top:8px">
+            <li> $\, h(1) = 1$;</li>
+            <li> $\, h(V_{jk}) = 0$ for all $V \in \Omega_\nu$, $\nu \in N \setminus \{0\}$.</li>
+          </ul>
+        </p>
+      
+      <div class="box step">
+        <div class="label">Conclusion</div>
+        Fix matrices $V^{(\nu)} \in \Omega_\nu$ and let $\mathcal{B} = \{V^{(\nu)}\}_{\nu \in N}$. Then $(A, \mathcal{B}, N)$ is a Krein algebra.
+      </div>
+    </div>
+  </section>
+
+  <!-- Thank you -->
+  <section class="slide title-slide">
+    <h1>Thank you!</h1>
+    
+    <image src="CitizenKrein3.png" alt="Thank you!" style="width: 700px; margin-top: 20px;" display="flex" />
+    
+    <div class="gold-rule"></div>
+    
+    
+  </section>
+
+  <div id="footer"><span>Tannaka–Krein Duality and Non-Commutative Sets · SIMA 2026</span><span class="num" id="counter"></span></div>
+  <div id="progress"></div>
+</div>
+</div>
+<div id="hint">← → navigate · D theme · F fullscreen · P print to PDF</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var hint = document.getElementById('hint');
+  var idx = 0;
+
+  function fit() {
+    var vp = document.getElementById('viewport');
+    var s = Math.min(vp.clientWidth / 1280, vp.clientHeight / 720);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+
+  function steps(i) { return slides[i].querySelectorAll('.step'); }
+  function showAll(i) { steps(i).forEach(function (e) { e.classList.add('shown'); }); }
+  function hideAll(i) { steps(i).forEach(function (e) { e.classList.remove('shown'); }); }
+
+  function render() {
+    slides.forEach(function (s, i) { s.classList.toggle('active', i === idx); });
+    document.body.classList.toggle('on-title', idx === 0 || idx === slides.length - 1);
+    counter.textContent = (idx + 1) + ' / ' + slides.length;
+    progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
+  }
+
+  function go(i, fromEnd) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    if (fromEnd) showAll(idx); else hideAll(idx);
+    render();
+  }
+
+  function next() {
+    var hidden = slides[idx].querySelectorAll('.step:not(.shown)');
+    if (hidden.length) { hidden[0].classList.add('shown'); return; }
+    if (idx < slides.length - 1) go(idx + 1, false);
+  }
+  function prev() {
+    var shown = slides[idx].querySelectorAll('.step.shown');
+    if (shown.length) { shown[shown.length - 1].classList.remove('shown'); return; }
+    if (idx > 0) go(idx - 1, true);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Enter':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace':
+        e.preventDefault(); prev(); break;
+      case 'Home': go(0, false); break;
+      case 'End': go(slides.length - 1, true); break;
+      case 'f': case 'F':
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        break;
+      case 'd': case 'D':
+        var root = document.documentElement;
+        var dark = root.getAttribute('data-theme') === 'dark' ||
+          (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        root.setAttribute('data-theme', dark ? 'light' : 'dark'); break;
+      case 'p': case 'P': window.print(); break;
+    }
+  });
+
+  // click / tap to advance (left 25% goes back), swipe support
+  var down = null;
+  document.getElementById('viewport').addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY }; });
+  document.getElementById('viewport').addEventListener('pointerup', function (e) {
+    if (!down) return;
+    var dx = e.clientX - down.x, dy = e.clientY - down.y;
+    down = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { dx < 0 ? next() : prev(); return; }
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+      (e.clientX < window.innerWidth * 0.25) ? prev() : next();
+    }
+  });
+
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n && n - 1 !== idx) go(n - 1, false);
+  });
+
+  var start = parseInt(location.hash.slice(1), 10);
+  if (start) idx = Math.max(0, Math.min(slides.length - 1, start - 1));
+  fit(); render();
+
+  hint.classList.add('show');
+  setTimeout(function () { hint.classList.remove('show'); }, 4000);
+})();
+</script>
+</body>
+</html>
