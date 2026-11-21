@@ -580,6 +580,41 @@ window.MathJax = {
     </div>
   </section>
 
+
+
+  <!-- 24 · Krein algebra of a compact group: definition -->
+  <section class="slide">
+    <h2>An example: Krein algbebra of $SU(2)$</h2>
+    <div class="body dense">
+      <div class="box step" style="margin-top:0">
+        <div class="label">Theorem </div>
+        There is a family of unitary irreps,
+      $\{(\pi_n,U(\mathbb{C}^{n+1}))\}_{n=1}^\infty$, such that 
+      if $(\pi,H_\pi)$ is an unitary irrep then $\exists!$ $p\in \mathbb{N}$ with $d_\pi=p+1$ and $\pi\cong \pi_p$. 
+      In particular $\overline{\pi_n}\cong \pi_n$,  for all $n$.
+      </div>
+
+      <div class="box step" >
+         <div class="label">Theorem (Clebsch–Gordan decomposition)</div>
+        With the notation given above, for $m\geq n \geq 1$: $\pi_m\otimes \pi_n\cong \oplus_{k=0}^n \pi_{m+n-2k}$
+      </div>
+
+
+      <ul style="margin-top:18px">
+        <li class="step">Lets $[n]$ or $[\pi_n]$ denote the equivalence class of $\pi_n$. </li>
+        <li class="step">We think $\{[n]:n\in \mathbb{N}\}$ as  a set of generator with operations: 
+          \begin{eqnarray*}
+            [n]\oplus [m]&=&[\pi_n\oplus \pi_m], \\
+          \text{if $m\geq n$:}\quad [n]\otimes[m]=[m]\otimes[n]&=&\oplus_{k=0}^n [n+m-2k] 
+          \end{eqnarray*}
+        </li>
+        
+      </ul>
+    </div>
+  </section>
+
+ 
+
   <!-- 25 · Reconstructing the group: structure space and product -->
   <section class="slide">
     <h2>Reconstructing the Group from a Krein Algebra</h2>
